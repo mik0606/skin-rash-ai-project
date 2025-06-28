@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skin Rash Predictor</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 40px;
+      text-align: center;
+    }
+    h2 {
+      color: #005b96;
+    }
+    #result {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+      color: green;
+    }
+    input, button {
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Skin Rash Prediction</h2>
+
+  <input type="file" id="imageInput" accept="image/*"><br>
+  <button onclick="predictImage()">Predict</button>
+
+  <h3 id="result"></h3>
+
+  <script>
+    async function predictImage() {
+      const input = document.getElementById('imageInput');
+      if (input.files.length === 0) {
+        alert("Please select an image.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', input.files[0]);
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        document.getElementById('result').innerText = "Prediction: " + result.prediction;
+
+      } catch (err) {
+        console.error("Error:", err);
+        alert("Failed to fetch prediction.");
+      }
+    }
+  </script>
+</body>
+</html>
